@@ -1,0 +1,59 @@
+<div class="page-header">
+  <h1>Poll List</h1>
+</div>
+{{voterListCtrl.user}}
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" class="form-control" ng-model="query" placeholder="Search for a poll">
+  </div>
+</div>
+<div class="row">
+  <div class="row" ng-show="!voterListCtrl.polls.length">
+    <div class="col-xs-12">
+      <hr>
+    </div>
+  </div>
+  <p class="text-center" ng-show="!voterListCtrl.polls.length">
+    No polls at the moment <i class="fa fa-smile-o fa-2x" aria-hidden="true"></i>
+  </p>
+  </br>
+  </br>
+  </br>
+  <div class="table-responsive" ng-show="voterListCtrl.polls.length">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Poll</th>
+          <th>Deadline</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="poll in voterListCtrl.polls | filter: query" ng-attr-class="{{poll.isActive?'success':'text-muted'}}" id="tr-{{$index}}">
+          <td><b>{{$index+1}}</b></td>
+          <td>{{poll.question.text}}</td>
+          <td>{{poll.expiry_date|date:'MMM dd, yyyy hh:mm:ss a'}}</td>
+          <td>
+            {{poll.isActive?"ONLINE":"offline"}}
+            <button type="button " class="btn btn-xs v-switch">
+              <i layout="row" layout-align="center center" aria-hidden='true'>
+                <md-progress-circular ng-style="{'visibility': poll.status ? 'visible' : 'hidden'}" md-diameter="15px"></md-progress-circular>
+              </i>
+            </button>
+          </td>
+          <td class="text-right">
+            <span ng-hide="true">{{voterListCtrl.isVoted(poll)}}</span>
+            <button ng-show="!voterListCtrl.isVote" ng-style="{'visibility': poll.isActive ? 'visible' : 'hidden'}" ng-click="voterListCtrl.vote($index,poll)" type="button " class="btn btn-xs btn-primary" ng-disabled="poll.status">
+              vote <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            </button> &nbsp;
+            <a style="cursor:pointer" ng-click="voterListCtrl.result($index,poll)">result</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<p>&nbsp;</p>

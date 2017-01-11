@@ -1,0 +1,53 @@
+<div class="page-header">
+  <h1>View Poll</h1>
+</div>
+
+<div ng-hide='voteCtrl.isVoted'>
+  <div class="well well-lg">
+    <strong>Question</strong><br>{{voteCtrl.poll.question.text}}
+  </div>
+</div>
+
+<div ng-hide='voteCtrl.isVoted'>
+  <p class="lead">Please select one of the following options:</p>
+
+  <form role="form" ng-submit="voteCtrl.vote()">
+    <div ng-repeat="choice in voteCtrl.poll.question.choices" class="radio">
+      <label>
+				<input type="radio" name="choice" ng-model="voteCtrl.choiceId" value="{{$index}}">
+				{{choice.text}}
+			</label>
+    </div>
+    <p>
+      <hr>
+    </p>
+    <div class="row">
+      <div class="col-xs-6">
+        <a href="#/user/polls" class="btn btn-default" role="button"><span class="glyphicon glyphicon-arrow-left"></span> Back to Poll List</a>
+      </div>
+      <div class="col-xs-6">
+        <button class="btn btn-primary pull-right" type="submit">Vote &raquo;</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div ng-show="voteCtrl.isVoted">
+  <div class="alert alert-success" role="alert">
+    Your vote has been registered!
+    <a href="#/results" class="alert-link"> view results of poll</a>
+  </div>
+  <br/>
+  <p>
+    <hr>
+  </p>
+  <div class="row">
+    <div class="col-xs-6">
+      <a href="#/user/polls" class="btn btn-default" role="button"><span class="glyphicon glyphicon-arrow-left"></span> Back to Poll List</a>
+    </div>
+    <div class="col-xs-6">
+      <a href="#/results" class="btn btn-primary pull-right" role="button">View Result &raquo;</a>
+    </div>
+  </div>
+</div>
+<p>&nbsp;</p>

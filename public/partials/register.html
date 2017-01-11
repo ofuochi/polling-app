@@ -1,0 +1,61 @@
+<div id="signupbox" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+
+  <div ng-show='regCtrl.alerts'>
+    <script type="text/ng-template" id="alert.html">
+      <div ng-transclude></div>
+    </script>
+    <div uib-alert ng-repeat="alert in regCtrl.alerts" ng-class="'alert-' + (alert.type || 'warning')" close="regCtrl.closeAlert($index)">{{alert.msg}}</div>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title">Sign Up</div>
+      <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#/login">Sign In</a></div>
+    </div>
+    <div class="panel-body">
+      <form id="signupform" class="form-horizontal" role="form" ng-submit="regCtrl.register()">
+
+        <div id="signupalert" style="display:none" class="alert alert-danger">
+          <p>Error:</p>
+          <span></span>
+        </div>
+
+        <div class="form-group">
+          <label for="firstname" class="col-md-3 control-label">Name</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" name="name" placeholder="Name" ng-model="regCtrl.user.name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="username" class="col-md-3 control-label">Username</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" name="username" placeholder="username" ng-model="regCtrl.user.username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="col-md-3 control-label">Email</label>
+          <div class="col-md-9">
+            <input type="email" class="form-control" name="email" placeholder="Email Address" ng-model="regCtrl.user.email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="col-md-3 control-label">Password</label>
+          <div class="col-md-9">
+            <input type="password" class="form-control" name="passwd" placeholder="Password" ng-model="regCtrl.user.password">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <!-- Button -->
+          <div class="col-md-offset-3 col-md-9">
+            <button id="btn-signup" type="submit" class="btn btn-success"><i class="fa fa-hand-o-right" aria-hidden="true"></i> &nbsp Sign Up</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400');
+body {
+  padding: 50px;
+  font: 14px "Roboto", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.result-table {
+  margin: 20px 0;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.result-table td {
+  padding: 8px;
+}
+
+.result-table>tbody>tr>td:first-child {
+  width: 25%;
+  max-width: 300px;
+  text-align: right;
+}
+
+.result-table td table {
+  background-color: lightblue;
+  text-align: right;
+}
+
+.switch,
+.v-switch {
+  background-color: transparent;
+  padding: 0px;
+}
+
+.v-switch {
+  pointer-events: none;
+}
+
+.fa-toggle-on {
+  color: green;
+}
+
+label {
+  white-space: nowrap;
+}
+
+small {
+  font-weight: lighter;
+}

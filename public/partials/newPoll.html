@@ -1,0 +1,59 @@
+<div class="page-header">
+  <h1>Create New Poll</h1>
+</div>
+<div class="row">
+
+  <div class="col-sm-3">
+    <label for="deadline">Deadline</label>
+    <div class="input-group">
+      <input ng-change="newPollCtrl.dateChange(newPollCtrl.deadline)" type="text" class="form-control" uib-datepicker-popup="d!/M!/yyyy" ng-model="newPollCtrl.deadline" is-open="newPollCtrl.popup.opened" datepicker-options="newPollCtrl.dateOptions" ng-required="true"
+        close-text="Close">
+      <div uib-datepicker-popup-wrap ng-model="newPollCtrl.deadline" ng-change="newPollCtrl.dateSelection(date)">
+      </div>
+      <span type="button" class="input-group-addon btn btn-default" ng-click="newPollCtrl.open()">
+        <i class="fa fa-calendar fa-fw"></i>
+      </span>
+    </div>
+  </div>
+  <div class="col-xs-1">
+    <label><small class='text-muted'>time (24hrs)</small></label>
+    <div uib-timepicker show-seconds='true' ng-model="newPollCtrl.deadlineTime" ng-change="newPollCtrl.changedTime(newPollCtrl.deadlineTime)" show-spinners="false" show-meridian="ismeridian"></div>
+  </div>
+</div>
+
+<br/>
+<br/>
+<br/>
+<form role="form" ng-submit="newPollCtrl.createPoll()">
+  <div class="form-group">
+    <label for="pollQuestion">Question</label>
+    <input type="text" ng-model="newPollCtrl.poll.question.text" class="form-control" id="pollQuestion" placeholder="Enter poll question" name="question">
+  </div>
+  </br>
+  </br>
+  <div class="form-group">
+    <label>Choices</label>
+    <div ng-repeat="choice in newPollCtrl.poll.question.choices">
+      <input type="text" ng-model="choice.text" ng-change="choice.id={{$index}}" class="form-control" id="choice{{$index+1}}" placeholder="Enter choice {{$index+1}} text" name="choice{{$index+1}}"><br>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <button type="button" class="btn btn-default" ng-click="newPollCtrl.addChoice()"><span class="glyphicon glyphicon-plus"></span> Add another</button>
+    </div>
+  </div>
+  <p>
+    <hr>
+  </p>
+  <div class="row">
+    <div class="col-xs-6">
+      <a href="#/admin/polls" class="btn btn-default" role="button">
+        <span class="glyphicon glyphicon-arrow-left"></span> Back to Poll List</a>
+    </div>
+    <div class="col-xs-6">
+      <button role="button" class="btn btn-primary pull-right" type="submit">Create Poll &raquo;</button>
+    </div>
+
+  </div>
+  <p>&nbsp;</p>
+</form>

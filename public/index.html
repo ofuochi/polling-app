@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang='en' ng-app="app" ng-cloak>
+
+  <head>
+    <!--<base href="/">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Poll Trust</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Angular Material style sheet -->
+    <!--<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">-->
+
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href='/stylesheets/style.css'>
+  </head>
+
+
+  <body ng-controller='MainCtrl'>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" role="button" ng-click='goHome()'>PollTrust</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right" ng-show="isAuthenticated">
+            <li ng-class="{active:isActive(user.isAdmin?'/admin/polls':'/user/polls')}"><a href="{{user.isAdmin?'#/admin/polls':'#/user/polls'}}">Polls<span class="sr-only">(current)</span></a></li>
+            <li><a href="#/about">About</a></li>
+            <li><a href="#/contact">Contact</a></li>
+
+            <li>
+              <a></a>
+            </li>
+            <li class="dropdown">
+              <a role='button' class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.username}} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Edit profile</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a role='button' ng-click='logout()'>logout</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right" ng-hide='isAuthenticated'>
+            <li ng-class="{active:isActive('/login')}"><a href="#/login">Login <span class="sr-only">(current)</span></a></li>
+            <li ng-class="{active:isActive('/register')}"><a href="#/register">Register</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav>
+
+    <!--<ui-view></ui-view>-->
+    <div ng-view></div>
+  </body>
+
+
+
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.min.js"></script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-touch.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.3.1/ui-bootstrap-tpls.min.js"></script>
+
+  <!--jquery and bootstrap jquery-->
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.min.js"></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-socket-io/0.7.0/socket.min.js"></script>
+
+  <script type="text/javascript" src="controllers.js"></script>
+  <script type="text/javascript" src="mainApp.js"></script>
+
+  <script type="text/javascript" src="factories/pollFactory.js"></script>
+  <script type="text/javascript" src="factories/userFactory.js"></script>
+
+</html>
