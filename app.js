@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require("express-session");
+var expressValidator = require("express-validator");
 var passport = require("passport");
 var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -39,6 +40,22 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(flash());
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+    var namespace = param.split('.');
+    var root = namespace.shift();
+    var formParam = root;
+
+    while (namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param: formParam,
+      msg: msg,
+      value: value
+    };
+  }
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'controllers/client')));
 

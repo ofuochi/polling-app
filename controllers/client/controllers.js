@@ -68,15 +68,32 @@ function PollListCtrl($location, pollFactory, $sessionStorage) {
 
   var listCtrl = this;
   listCtrl.polls = [];
+
+
+  listCtrl.closeAlert = function(index) {
+    listCtrl.alerts.splice(index, 1);
+  };
+  listCtrl.alerts = [];
+
+
   pollFactory.getPolls()
     .success(function(data) {
       listCtrl.polls = data;
     })
-    .error(function(err) {
+    .error(function(err, status) {
       console.log(err);
+      if (status === 400) {
+        listCtrl.alerts.push({
+          type: 'danger',
+          msg: err
+        });
+      }
     });
 
+
+
   listCtrl.toggleActive = function(index, data) {
+    listCtrl.alerts = [];
     listCtrl.polls[index].status = true;
     // angular.element(document.querySelector('#tr-' + index))
     //   .children().prop('disabled', true);
@@ -92,9 +109,15 @@ function PollListCtrl($location, pollFactory, $sessionStorage) {
       .error(function(err, status) {
         listCtrl.polls[index].isActive = !data.isActive;
         listCtrl.polls.forEach(function(row) {
-          row.status = true;
+          row.status = false;
         });
         console.log(err);
+        if (status === 400) {
+          listCtrl.alerts.push({
+            type: 'danger',
+            msg: err
+          });
+        }
       });
   };
   listCtrl.delete = function(index, poll) {
@@ -248,6 +271,7 @@ function LoginCtrl($window, $location, userFactory,
 
 function NewPollCtrl($location, pollFactory) {
   var newPollCtrl = this;
+  newPollCtrl.disabled = false;
   newPollCtrl.poll = {
     question: {
       text: '',
@@ -262,16 +286,15 @@ function NewPollCtrl($location, pollFactory) {
           id: '',
           count: 0
 
-        },
-
-        {
-          text: '',
-          id: '',
-          count: 0
         }
       ]
     }
   };
+  newPollCtrl.closeAlert = function(index) {
+    newPollCtrl.alerts.splice(index, 1);
+  };
+  newPollCtrl.alerts = [];
+
   let createdAtPlus1 =
     (new Date()).setDate((new Date()).getDate() + 1);
   newPollCtrl.deadline = createdAtPlus1;
@@ -305,18 +328,31 @@ function NewPollCtrl($location, pollFactory) {
   };
 
   newPollCtrl.createPoll = function() {
+    newPollCtrl.disabled = true;
+
     let deadline = new Date(newPollCtrl.deadline);
     newPollCtrl.poll.expiry_date = deadline;
     let poll = newPollCtrl.poll;
     pollFactory.createPoll(poll)
-      .success(function(data) {
+      .success(function(data, status) {
+        newPollCtrl.disabled = false;
+
         $location.path("/admin/polls");
       })
-      .error(function(err) {
+      .error(function(err, status) {
         console.log(err);
+        newPollCtrl.disabled = false;
+        if (status === 400) {
+          newPollCtrl.alerts.push({
+            type: 'danger',
+            msg: err
+          });
+        }
       });
   };
-
+  newPollCtrl.close = function(index) {
+    newPollCtrl.poll.question.choices.splice(index, 1);
+  };
 }
 
 function EditPollCtrl($location, pollFactory, $sessionStorage) {
@@ -327,6 +363,10 @@ function EditPollCtrl($location, pollFactory, $sessionStorage) {
   editCtrl.pollIndex = poll.index;
   editCtrl.poll = poll.poll;
 
+  editCtrl.closeAlert = function(index) {
+    editCtrl.alerts.splice(index, 1);
+  };
+  editCtrl.alerts = [];
 
   let createdAt = $sessionStorage.savedPoll.poll.createdAt;
   let createdAtPlus1 =
@@ -367,12 +407,13 @@ function EditPollCtrl($location, pollFactory, $sessionStorage) {
 
 
   editCtrl.addChoice = function() {
-    editCtrl.poll.choices.push({
+    editCtrl.poll.question.choices.push({
       text: ''
     });
   };
 
   editCtrl.editPoll = function() {
+    editCtrl.alerts = [];
     editCtrl.disabled = true;
     let expiryDate = new Date(editCtrl.deadline);
     expiryDate.setHours(editCtrl.deadlineTime.getHours());
@@ -384,9 +425,19 @@ function EditPollCtrl($location, pollFactory, $sessionStorage) {
         $location.path("/admin/polls");
         editCtrl.disabled = false;
       })
-      .error(function(err) {
+      .error(function(err, status) {
         console.log(err);
+        editCtrl.disabled = false;
+        if (status === 400) {
+          editCtrl.alerts.push({
+            type: 'danger',
+            msg: err
+          });
+        }
       });
+  };
+  editCtrl.close = function(index) {
+    editCtrl.poll.question.choices.splice(index, 1);
   };
 }
 

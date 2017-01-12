@@ -1,7 +1,12 @@
 <div class="page-header">
   <h1>Poll List</h1>
 </div>
-
+<div ng-show='listCtrl.alerts'>
+  <script type="text/ng-template" id="alert.html">
+    <div ng-transclude></div>
+  </script>
+  <div uib-alert ng-repeat="alert in listCtrl.alerts" ng-class="'alert-' + (alert.type || 'warning')" close="listCtrl.closeAlert($index)">{{alert.msg}}</div>
+</div>
 <div class="row">
   <div class="col-xs-5">
     <a href="#/admin/new_poll" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Poll</a>

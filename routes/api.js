@@ -42,6 +42,18 @@ router.route('/polls')
     });
   })
   .post(function(req, res) {
+    if (req.body.question.text === "")
+      return res.status(400).send("Question is required");
+
+    if (req.body.question.choices[0].text.trim() === "" ||
+      req.body.question.choices[1].text.trim() === "") {
+      return res.status(400).send("At least two choices are required");
+    }
+    if (!req.body.expiry_date)
+      return res.status(400).send("Expiry date is required");
+    if ((new Date(req.body.expiry_date)) <= (new Date()))
+      return res.status(400).send("Poll is expired!");
+
     var newPoll = new Poll();
     newPoll.question.text = req.body.question.text;
     newPoll.question.choices = req.body.question.choices;
@@ -84,6 +96,8 @@ router.route('/polls/:id')
     });
   })
   .put(function(req, res) {
+
+
     if (req.body.isChoice) {
       pollCtrl.updatePollChoicesById(
         req.params.id,
@@ -97,6 +111,17 @@ router.route('/polls/:id')
         });
     }
     else {
+      if (req.body.poll.question.text === "")
+        return res.status(400).send("Question is required");
+
+      if (req.body.poll.question.choices[0].text.trim() === "" ||
+        req.body.poll.question.choices[1].text.trim() === "") {
+        return res.status(400).send("At least two choices are required");
+      }
+      if (!req.body.poll.expiry_date)
+        return res.status(400).send("Expiry date is required");
+      if ((new Date(req.body.poll.expiry_date)) <= (new Date()))
+        return res.status(400).send("Poll is expired!");
       pollCtrl.updatePollById(
         req.params.id,
         req.body.poll,
@@ -145,6 +170,10 @@ router.route('/votes')
           }
 
           console.log("vote created");
+          pollCtrl.getPollById(vote._poll, function(err, poll) {
+            if (err) throw err;
+            console.log(poll.expiry_date);
+          });
           //vote has been created
           pollCtrl.updatePollVotesById(req.body._poll, vote._id, function(err, poll) {
             if (err) {

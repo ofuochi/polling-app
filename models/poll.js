@@ -12,12 +12,16 @@ var pollSchema = new Schema({
       trim: true,
     },
     choices: {
-      type: Array
+      type: Array,
+      required: true
     }
   },
 
   expiry_date: {
-    type: Date
+    type: Date,
+    default: function() {
+      return +new Date() + 1 * 24 * 60 * 60 * 1000
+    }
   },
   isActive: {
     type: Boolean,

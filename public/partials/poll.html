@@ -1,14 +1,20 @@
 <div class="page-header">
   <h1>Edit Poll #{{editCtrl.pollIndex +1}}</h1>
 </div>
-
+<div ng-show='editCtrl.alerts'>
+  <script type="text/ng-template" id="alert.html">
+    <div ng-transclude></div>
+  </script>
+  <div uib-alert ng-repeat="alert in editCtrl.alerts" ng-class="'alert-' + (alert.type || 'warning')" close="editCtrl.closeAlert($index)">{{alert.msg}}</div>
+</div>
 <div class="row">
 
   <div class="col-sm-3">
     <label for="deadline">Deadline <small class='text-muted'>{{editCtrl.isExpired()}}</small></label>
 
     <div class="input-group">
-      <input ng-change="editCtrl.dateChange(editCtrl.deadline)" type="text" class="form-control" uib-datepicker-popup="d!/M!/yyyy" ng-model="editCtrl.deadline" is-open="editCtrl.popup.opened" datepicker-options="editCtrl.dateOptions" ng-required="true" close-text="Close">
+      <input ng-disabled="editCtrl.disabled" ng-change="editCtrl.dateChange(editCtrl.deadline)" type="text" class="form-control" uib-datepicker-popup="d!/M!/yyyy" ng-model="editCtrl.deadline" is-open="editCtrl.popup.opened" datepicker-options="editCtrl.dateOptions"
+        ng-required="true" close-text="Close">
       <div uib-datepicker-popup-wrap ng-model="editCtrl.deadline" ng-change="editCtrl.dateSelection(date)">
       </div>
       <span type="button" class="input-group-addon btn btn-default" ng-click="editCtrl.open()">
@@ -18,7 +24,7 @@
   </div>
   <div class="col-xs-1">
     <label><small class='text-muted'>time (24hrs)</small></label>
-    <div uib-timepicker show-seconds='true' ng-model="editCtrl.deadlineTime" ng-change="editCtrl.changedTime(editCtrl.deadlineTime)" show-spinners="false" show-meridian="ismeridian"></div>
+    <div ng-disabled="editCtrl.disabled" uib-timepicker show-seconds='true' ng-model="editCtrl.deadlineTime" ng-change="editCtrl.changedTime(editCtrl.deadlineTime)" show-spinners="false" show-meridian="ismeridian"></div>
   </div>
 </div>
 
@@ -29,14 +35,23 @@
 <form role="form" ng-submit="editCtrl.editPoll()">
   <div class="form-group">
     <label for="pollQuestion">Question</label>
-    <input ng-required="true" ng-disabled="editCtrl.disabled" type="text" ng-model="editCtrl.poll.question.text" class="form-control" id="pollQuestion" placeholder="Enter poll question" name="question">
+    <input required ng-disabled="editCtrl.disabled" type="text" ng-model="editCtrl.poll.question.text" class="form-control" id="pollQuestion" placeholder="Enter poll question" name="question">
   </div>
   <br/>
   <div class="form-group">
     <label>Choices</label>
-    <div ng-repeat="choice in editCtrl.poll.question.choices">
-      <input ng-required="true" ng-disabled="editCtrl.disabled" type="text" ng-model="choice.text" class="form-control" id="choice{{$index+1}}" placeholder="Enter choice {{$index+1}} text" name="choice{{$index+1}}" idname="choice{{$index+1}}"><br>
+    <div class="row" ng-repeat="choice in editCtrl.poll.question.choices">
+      <div class="col-lg-6">
+        <div class="input-group">
+          <input required ng-disabled="editCtrl.disabled" type="text" ng-model="choice.text" class="form-control" id="choice{{$index+1}}" placeholder="Enter choice {{$index+1}} text" name="choice{{$index+1}}"><br>
+          <span class="input-group-btn" ng-style="{'visibility': $index>1 ? 'visible' : 'hidden'}">
+            <button class="btn btn-secondary" type="button" ng-click = "editCtrl.close($index)">x</button>
+          </span>
+        </div>
+        <br/>
+      </div>
     </div>
+
   </div>
   <div class="row">
     <div class="col-xs-12">

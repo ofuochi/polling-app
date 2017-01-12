@@ -50,3 +50,7 @@ label {
 small {
   font-weight: lighter;
 }
+
+.btn-secondary {
+  background: transparent;
+}
