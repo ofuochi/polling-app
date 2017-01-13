@@ -19,18 +19,13 @@ function voteController() {
     Vote.find({}, '-__v').populate('_poll _voter').exec(callback);
   };
 
-  this.deleteVoteById = function(id, callback) {
-    Vote.findOneAndRemove({
-      _id: id
-    }, callback)
-  };
 
   this.deleteVotes = function(callback) {
     Vote.remove({}, callback);
-  }
+  };
   this.deleteVoteById = function(id, callback) {
-    Vote.findOneAndRemove(id, callback);
-  }
+    Vote.findByIdAndRemove(id, callback);
+  };
 
   this.updateVoteById = function(id, vote, callback) {
     Vote.findOneAndUpdate({

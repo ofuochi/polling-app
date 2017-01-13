@@ -169,22 +169,48 @@ router.route('/votes')
             throw err;
           }
 
+          //Vote has been created but not updated here
           console.log("vote created");
-          pollCtrl.getPollById(vote._poll, function(err, poll) {
-            if (err) throw err;
-            console.log(poll.expiry_date);
+
+          let promise = new Promise(function(resolve, reject) {
+            pollCtrl.getPollById(vote._poll, function(err, poll) {
+              if (err) throw err;
+              if (poll.expiry_date < new Date()) { //poll is expired
+                resolve(vote);
+              }
+              else { // poll is not expired
+                reject(vote);
+              }
+
+            });
           });
-          //vote has been created
-          pollCtrl.updatePollVotesById(req.body._poll, vote._id, function(err, poll) {
-            if (err) {
-              voteCtrl.deleteVoteById(vote._id, function(err1, info) {
-                if (err1) throw err1;
-                res.status(500).send("ERROR: Vote not registered!");
-                throw err;
+
+          promise.then(function(vote) {
+            //remove vote on expired poll
+            voteCtrl.deleteVoteById(vote._id, function(err, info) {
+              if (err) throw err;
+              console.log('vote removed due to expired poll');
+              res.status(400).send("Poll is expired!");
+            });
+          }, function(vote) {
+            pollCtrl.updatePollVotesById(
+              req.body._poll,
+              vote._id,
+              function(err, poll) { //vote has been created and about to be updated
+                if (err) {
+                  voteCtrl.deleteVoteById(vote._id, function(err1, info) {
+                    if (err1) throw err1;
+                    console.log("vote removed due to internal error");
+                    res.status(500).send("ERROR: Vote not registered!");
+                    throw err;
+                  });
+                }
+                console.log("vote successfully registered on poll");
+                res.status(200).json(poll);
               });
-            }
-            res.status(200).json(poll);
           });
+
+
         });
 
       });

@@ -68,14 +68,10 @@ function PollListCtrl($location, pollFactory, $sessionStorage) {
 
   var listCtrl = this;
   listCtrl.polls = [];
-
-
   listCtrl.closeAlert = function(index) {
     listCtrl.alerts.splice(index, 1);
   };
   listCtrl.alerts = [];
-
-
   pollFactory.getPolls()
     .success(function(data) {
       listCtrl.polls = data;
@@ -89,9 +85,6 @@ function PollListCtrl($location, pollFactory, $sessionStorage) {
         });
       }
     });
-
-
-
   listCtrl.toggleActive = function(index, data) {
     listCtrl.alerts = [];
     listCtrl.polls[index].status = true;
@@ -157,8 +150,6 @@ function PollListCtrl($location, pollFactory, $sessionStorage) {
     };
     $location.path('/poll');
   };
-
-
 }
 
 function RegCtrl($location, userFactory, msgService) {
@@ -482,7 +473,9 @@ function VoteCtrl($location, pollFactory, $sessionStorage) {
                 choice: vote.choice
               };
             })
-            .error(function(err) {
+            .error(function(err, status) {
+              if (status === 500)
+                voteCtrl.isVoted = true;
               console.log(err);
             });
 
