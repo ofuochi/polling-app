@@ -28,6 +28,7 @@ function VoterListCtrl($location, pollFactory,
       console.log(err);
     });
 
+
   socket.on('server:createPoll', function(data) {
     voterListCtrl.polls.push(data.poll);
   });
@@ -55,10 +56,13 @@ function VoterListCtrl($location, pollFactory,
     $location.path('/vote');
   };
   voterListCtrl.result = function(index, poll) {
+    let choice = $sessionStorage.savedPoll ?
+      $sessionStorage.savedPoll.choice : null;
+
     $sessionStorage.savedPoll = {
       index: index,
       poll: poll,
-      choice: $sessionStorage.savedPoll.choice
+      choice: choice
     };
     $location.path('/results');
   };

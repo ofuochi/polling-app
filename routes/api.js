@@ -9,18 +9,25 @@ var VoteController = require('../controllers/server/voteController');
 var Poll = require('../models/poll');
 var Vote = require('../models/vote');
 
-// router.use(function(req, res, next) {
-//   if (req.method === "GET") {
-//     return next();
-//   }
+const chalk = require('chalk');
 
-//   if (!req.isAuthenticated()) {
-//     console.log("User not authenticated");
-//     var fullUrl = req.get('host') + '/#/login';
-//     return res.redirect(500, fullUrl);
-//   }
-//   return next();
-// });
+function log(text) {
+  console.log(chalk.inverse(text));
+}
+
+router.use(function(req, res, next) {
+  if (req.method === "GET") {
+    return next();
+  }
+  else {
+    if (!req.isAuthenticated()) {
+      log("User not authenticated");
+      var fullUrl = req.get('host') + '/#/login';
+      return res.status(401).send(fullUrl);
+    }
+  }
+  return next();
+});
 
 router.use('/polls', function(req, res, next) {
   if ((req.method !== "GET" && req.method !== 'PUT') &&
@@ -36,7 +43,7 @@ router.route('/polls')
   .get(function(req, res) {
     pollCtrl.getPolls(function(err, polls) {
       if (err) return res.status(500).send(err);
-      console.log('getting polls');
+      log('getting polls');
 
       res.json(polls);
     });
@@ -64,7 +71,7 @@ router.route('/polls')
       res.io.emit('server:createPoll', {
         poll: poll
       });
-      console.log('Poll created successfully');
+      log('Poll created successfully');
     });
   })
   .delete(function(req, res) {
@@ -72,7 +79,7 @@ router.route('/polls')
       if (err) return res.status(500).send(err);
       res.io.emit('server:deleteAll', count);
       res.status(200).send(count);
-      console.log('Polls deleted: ' + count);
+      log('Polls deleted: ' + count);
     });
   });
 
@@ -81,7 +88,7 @@ router.route('/polls/:id')
     pollCtrl.getPollById(req.params.id, function(err, poll) {
       if (err) return res.status(500).send(err);
       res.json(poll);
-      console.log('Getting poll ' + poll._id);
+      log('Getting poll ' + poll._id);
     });
   })
   .delete(function(req, res) {
@@ -92,12 +99,10 @@ router.route('/polls/:id')
       res.io.emit('server:deleteOne', {
         index: req.body.index
       });
-      console.log('Deleted poll ' + resp._id);
+      log('Deleted poll ' + resp._id);
     });
   })
   .put(function(req, res) {
-
-
     if (req.body.isChoice) {
       pollCtrl.updatePollChoicesById(
         req.params.id,
@@ -140,12 +145,11 @@ router.route('/votes')
   .get(function(req, res) {
     voteCtrl.getVotes(function(err, votes) {
       if (err) return res.status(500).send(err);
-      console.log('Getting votes');
+      log('Getting votes');
       res.json(votes);
     });
   })
   .post(function(req, res) {
-
     voteCtrl.getVote(req.body._user, req.body._poll,
       function(err, vote) { //check if user already voted
         if (err) {
@@ -170,7 +174,7 @@ router.route('/votes')
           }
 
           //Vote has been created but not updated here
-          console.log("vote created");
+          log("vote created");
 
           let promise = new Promise(function(resolve, reject) {
             pollCtrl.getPollById(vote._poll, function(err, poll) {
@@ -189,7 +193,7 @@ router.route('/votes')
             //remove vote on expired poll
             voteCtrl.deleteVoteById(vote._id, function(err, info) {
               if (err) throw err;
-              console.log('vote removed due to expired poll');
+              log('vote removed due to expired poll');
               res.status(400).send("Poll is expired!");
             });
           }, function(vote) {
@@ -200,12 +204,12 @@ router.route('/votes')
                 if (err) {
                   voteCtrl.deleteVoteById(vote._id, function(err1, info) {
                     if (err1) throw err1;
-                    console.log("vote removed due to internal error");
+                    log("vote removed due to internal error");
                     res.status(500).send("ERROR: Vote not registered!");
                     throw err;
                   });
                 }
-                console.log("vote successfully registered on poll");
+                log("vote successfully registered on poll");
                 res.status(200).json(poll);
               });
           });
@@ -223,4 +227,6 @@ router.route('/votes/:id')
       res.json(vote);
     });
   });
+
+
 module.exports = router;

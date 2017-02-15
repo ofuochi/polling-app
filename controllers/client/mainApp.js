@@ -1,6 +1,6 @@
 'use strict';
 /*global angular,MainCtrl,LoginCtrl,RegCtrl,VoterListCtrl,PollListCtrl,
-HomeCtrl,NewPollCtrl,EditPollCtrl,VoteCtrl,ResultCtrl,io
+HomeCtrl,NewPollCtrl,EditPollCtrl,VoteCtrl,ResultCtrl,
 */
 
 (function() {
@@ -8,23 +8,29 @@ HomeCtrl,NewPollCtrl,EditPollCtrl,VoteCtrl,ResultCtrl,io
     .module('app', ['ngRoute', 'ui.bootstrap', 'btford.socket-io',
       'ngSanitize', 'ngTouch', 'ngAnimate', 'ngStorage'
     ])
-    .run(function($rootScope) {
+    .run(function($rootScope, $location) {
       $rootScope.$on("$routeChangeStart", function(event, next) {
         var isAuth = $rootScope.isAuthenticated;
-        if (!isAuth) {
+        if (!isAuth) { //user is not logged in
           if (next.$$route) {
-            var arr = next.$$route.originalPath.split('/');
-            if (arr[1] == "user" || arr[1] == "admin") {
+            let arr = next.$$route.originalPath.split('/');
+            if (arr[1] === "user" || arr[1] === "admin") {
+              //access to admin/* or user/* not allowed
               event.preventDefault();
+            }
+            else if (arr[1] === 'login' || arr[1] === 'register') {
+              $location.path(next.$$route.originalPath);
             }
           }
         }
-        else {
+        else { //if user is logged in
           if (next.$$route) {
-            var arr = next.$$route.originalPath.split('/');
-            if (!$rootScope.user.isAdmin && arr[1] == "admin")
+            let arr = next.$$route.originalPath.split('/');
+            if (!$rootScope.user.isAdmin && arr[1] === "admin")
+            //access to admin/* not allowed if user is not an admin
               event.preventDefault();
-            if (arr[1] == 'login' || arr[1] == 'register')
+            if (arr[1] === 'login' || arr[1] === 'register')
+            //access to login or register page not allowed
               event.preventDefault();
           }
         }
