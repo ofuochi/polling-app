@@ -73,7 +73,7 @@
 
       function getPoll(id) {
         return $http({
-          url: '/api/poll/' + id,
+          url: '/api/polls/' + id,
           method: 'GET',
           catch: true
         });
@@ -92,8 +92,8 @@
 
       function getVote(voterId, pollId) {
         return $http({
-          url: '/api/votes/' + voterId,
-          method: 'POST',
+          url: '/api/votes/' + voterId + '/' + pollId,
+          method: 'GET',
           data: {
             _poll: pollId
           },
